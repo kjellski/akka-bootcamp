@@ -15,8 +15,11 @@ namespace WinTail
 			var consoleWriterProps = Props.Create<ConsoleWriterActor>();
 			var consoleWriterActor = MyActorSystem.ActorOf(consoleWriterProps, "consoleWriterActor");
 
-			var validationActorProps = Props.Create(() => new ValidationActor(consoleWriterActor));
-			var validationActor = MyActorSystem.ActorOf(validationActorProps, "validationActor");
+			var tailCoordinatorActorProps = Props.Create<TailCoordinatorActor>();
+			var tailCoordinatorActor = MyActorSystem.ActorOf(tailCoordinatorActorProps, "tailCoordinatorActor");
+			
+			var fileValidatorActorProps = Props.Create(() => new FileValidatorActor(consoleWriterActor, tailCoordinatorActor));
+			var validationActor = MyActorSystem.ActorOf(fileValidatorActorProps, "validationActor");
 
 			var consoleReaderProps = Props.Create<ConsoleReaderActor>(validationActor);
 			var consoleReaderActor = MyActorSystem.ActorOf(consoleReaderProps, "consoleReaderActor");
@@ -26,14 +29,6 @@ namespace WinTail
 
 			// blocks the main thread from exiting until the actor system is shut down
 			MyActorSystem.AwaitTermination();
-		}
-
-		/// <summary>
-		///     Fake actor / marker class. Does nothing at all, and not even an actor actually.
-		///     Here to show why you shouldn't use typeof approach to Props.
-		/// </summary>
-		public class FakeActor
-		{
 		}
 	}
 }

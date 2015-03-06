@@ -25,7 +25,7 @@ namespace WinTail
             }
             else
             {
-                Console.WriteLine(message);
+                Console.WriteLine(">" + message);
             }
 
             Console.ResetColor();
