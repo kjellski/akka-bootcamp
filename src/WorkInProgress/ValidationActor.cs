@@ -39,7 +39,6 @@ namespace WinTail
 
             // tell sender to continue doing its thing (whatever that may be, this actor doesn't care)
             Sender.Tell(new Messages.ContinueProcessing());
-
         }
 
         /// <summary>
