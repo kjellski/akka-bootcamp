@@ -20,8 +20,6 @@ namespace WinTail
                 // signal that the user needs to supply an input
                 _consoleWriterActor.Tell(new Messages.NullInputError("Input was blank. Please try again.\n"));
 
-                // tell sender to continue doing its thing (whatever that may be, this actor doesn't care)
-                Sender.Tell(new Messages.ContinueProcessing());
             }
             else
             {
@@ -40,9 +38,9 @@ namespace WinTail
                     _consoleWriterActor.Tell(
                         new Messages.ValidationError(string.Format("{0} is not an existing URI on disk.", msg)));
                 }
-                // tell sender to continue doing its thing (whatever that may be, this actor doesn't care)
-                Sender.Tell(new Messages.ContinueProcessing());
             }
+            // tell sender to continue doing its thing (whatever that may be, this actor doesn't care)
+            Sender.Tell(new Messages.ContinueProcessing());
         }
 
         /// <summary>
