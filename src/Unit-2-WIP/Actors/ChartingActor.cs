@@ -1,13 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using Akka.Actor;
 
 namespace ChartApp.Actors
 {
-    public class ChartingActor : UntypedActor
+    public class ChartingActor : ReceiveActor
     {
+        private readonly Chart _chart;
+        private Dictionary<string, Series> _seriesIndex;
+
+        public ChartingActor(Chart chart)
+            : this(chart, new Dictionary<string, Series>())
+        {
+        }
+
+        public ChartingActor(Chart chart, Dictionary<string, Series> seriesIndex)
+        {
+            _chart = chart;
+            _seriesIndex = seriesIndex;
+
+            Receive<InitializeChart>(ic => { HandleInitialize(ic); });
+            Receive<AddSeries>(addSeries => HandleAddSeries(addSeries));
+        }
+
         #region Messages
 
         public class InitializeChart
@@ -20,29 +36,17 @@ namespace ChartApp.Actors
             public Dictionary<string, Series> InitialSeries { get; private set; }
         }
 
-        #endregion
-
-        private readonly Chart _chart;
-        private Dictionary<string, Series> _seriesIndex;
-
-        public ChartingActor(Chart chart) : this(chart, new Dictionary<string, Series>())
+        public class AddSeries
         {
-        }
-
-        public ChartingActor(Chart chart, Dictionary<string, Series> seriesIndex)
-        {
-            _chart = chart;
-            _seriesIndex = seriesIndex;
-        }
-
-        protected override void OnReceive(object message)
-        {
-            if (message is InitializeChart)
+            public AddSeries(Series series)
             {
-                var ic = message as InitializeChart;
-                HandleInitialize(ic);
+                Series = series;
             }
+
+            public Series Series { get; private set; }
         }
+
+        #endregion
 
         #region Individual Message Type Handlers
 
@@ -57,16 +61,25 @@ namespace ChartApp.Actors
             //delete any existing series
             _chart.Series.Clear();
 
+            if (!_seriesIndex.Any())
+                return;
+
             //attempt to render the initial chart
-            if (_seriesIndex.Any())
+            foreach (var series in _seriesIndex)
             {
-                foreach (var series in _seriesIndex)
-                {
-                    //force both the chart and the internal index to use the same names
-                    series.Value.Name = series.Key;
-                    _chart.Series.Add(series.Value);
-                }
+                //force both the chart and the internal index to use the same names
+                series.Value.Name = series.Key;
+                _chart.Series.Add(series.Value);
             }
+        }
+
+        private void HandleAddSeries(AddSeries series)
+        {
+            if (string.IsNullOrEmpty(series.Series.Name) || _seriesIndex.ContainsKey(series.Series.Name))
+                return;
+
+            _seriesIndex.Add(series.Series.Name, series.Series);
+            _chart.Series.Add(series.Series);
         }
 
         #endregion
