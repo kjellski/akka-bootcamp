@@ -1,8 +1,8 @@
 # Lesson 2.2: Using `ReceiveActor` for Smarter Message Handling
 
-In the first unit, you learned how to use the `UntypedActor` ([docs](http://getakka.net/wiki/Working%20with%20actors#untypedactor-api "Akka.NET Untyped Actors")) to build your first actors and handle some simple message types.
+In the first unit, you learned how to use the `UntypedActor` ([docs](http://api.getakka.net/docs/stable/html/6300028C.htm "Akka.NET - UntypedActor")) to build your first actors and handle some simple message types.
 
-In this lesson we're going to show you how to use the `ReceiveActor` ([docs](http://getakka.net/wiki/ReceiveActor "Akka.NET - ReceiveActor")) to easily handle more sophisticated types of pattern matching and message handling in Akka.NET.
+In this lesson we're going to show you how to use the `ReceiveActor` ([docs](http://api.getakka.net/docs/stable/html/B124B2AF.htm "Akka.NET - ReceiveActor")) to easily handle more sophisticated types of pattern matching and message handling in Akka.NET.
 
 ## Key Concepts / Background
 ### Pattern matching
@@ -124,7 +124,7 @@ Same as the previous.
 This is a catch-all handler which accepts all `object` instances. This is usually used to handle any messages that aren't handled by a previous, more specific `Receive()` handler.
 
 ### The order in which you declare `Receive<T>` handlers matters
-What happens if we need to handle overlapping types of messages? 
+What happens if we need to handle overlapping types of messages?
 
 Consider the below messages: they start with the same substring, but assume they need to be handled differently.
 
@@ -181,7 +181,7 @@ public class StringActor : ReceiveActor
 ```
 
 ### Where do I define message handlers in a `ReceiveActor`?
-`ReceiveActor`s do not have an `OnReceive()` method. 
+`ReceiveActor`s do not have an `OnReceive()` method.
 
 Instead, you must hook up `Receive` message handlers directly in the `ReceiveActor` constructor, or in a method called to by that constructor.
 
@@ -318,3 +318,11 @@ Compare your code to the code in the [/Completed/ folder](Completed/) to compare
 Nice work, again. After having completed this lesson you should have a much better understanding of pattern matching in Akka.NET and an appreciation for how `ReceiveActor` is different than `UntypedActor`.
 
 **Let's move onto [Lesson 3 - Using the `Scheduler` to Send Recurring Messages](../lesson3).**
+
+## Any questions?
+**Don't be afraid to ask questions** :).
+
+Come ask any questions you have, big or small, [in this ongoing Bootcamp chat with the Petabridge & Akka.NET teams](https://gitter.im/petabridge/akka-bootcamp).
+
+### Problems with the code?
+If there is a problem with the code running, or something else that needs to be fixed in this lesson, please [create an issue](https://github.com/petabridge/akka-bootcamp/issues) and we'll get right on it. This will benefit everyone going through Bootcamp.
